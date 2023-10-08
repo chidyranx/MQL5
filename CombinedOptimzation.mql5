@@ -1,0 +1,35 @@
+// Create an instance of CTrade
+#include <Trade\Trade.mqh>
+CTrade trade;
+
+// Input variables for take profit and stop loss
+input double MyTakeProfitValue = 15;
+input double MyStopLossValue = 150;
+
+void OnTick()
+{
+   // Get the Ask price
+   double Ask = NormalizeDouble(SymbolInfoDouble(_Symbol, SYMBOL_ASK), _Digits);
+
+   // Get the Bid price
+   double Bid = NormalizeDouble(SymbolInfoDouble(_Symbol, SYMBOL_BID), _Digits);
+
+   // Get the Balance
+   double Balance = AccountInfoDouble(ACCOUNT_BALANCE);
+
+   // Get the Equity
+   double Equity = AccountInfoDouble(ACCOUNT_EQUITY);
+
+   // Check if there are no open positions
+   if (PositionsTotal() == 0)
+   {
+      // Place a buy order
+      trade.Buy(0.10, NULL, Ask, (Bid - MyStopLossValue * _Point), (Ask + MyTakeProfitValue * _Point), NULL);
+
+      // Place a sell order
+      trade.Sell(0.10, NULL, Bid, (Ask + MyStopLossValue * _Point), (Bid - MyTakeProfitValue * _Point), NULL);
+   }
+
+   // Chart output
+   Comment("Balance: ", Balance, "\n", "Equity: ", Equity, "\n", "MyTakeProfitValue: ", MyTakeProfitValue, "\n", "MyStopLossValue: ", MyStopLossValue);
+}
