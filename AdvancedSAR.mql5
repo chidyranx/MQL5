@@ -1,0 +1,46 @@
+string CheckEntry()
+{
+    // Create an array for price data
+    MqlRates PriceArray[];
+
+    // Sort the array from the current candle downwards
+    ArraySetAsSeries(PriceArray, true);
+
+    // Fill the array with price data
+    int data = CopyRates(Symbol(), Period(), 0, 3, PriceArray);
+
+    // Create an empty string for the signal
+    string signal = "";
+
+    // Create an array for SAR values
+    double sarArray[];
+
+    // Define SAR indicator
+    int sarDefinition = iSAR(_Symbol, _Period, 0.02, 0.2);
+
+    // Sort the SAR array from the current candle downwards
+    ArraySetAsSeries(sarArray, true);
+
+    // Fill the SAR array
+    CopyBuffer(sarDefinition, 0, 0, 3, sarArray);
+
+    // Calculate the value for the last candle
+    double lastSARValue = NormalizeDouble(sarArray[1], _Digits);
+
+    // Calculate the value for the candle before the last candle
+    double nextToLastSARValue = NormalizeDouble(sarArray[2], _Digits);
+
+    // Buy signal
+    if (lastSARValue < PriceArray[1].low && nextToLastSARValue > PriceArray[2].high)
+    {
+        signal = "buy";
+    }
+
+    // Sell signal
+    if (lastSARValue > PriceArray[1].high && nextToLastSARValue < PriceArray[2].low)
+    {
+        signal = "sell";
+    }
+
+    return signal;
+}
