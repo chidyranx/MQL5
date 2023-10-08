@@ -1,0 +1,65 @@
+#include <Trade\Trade.mqh>
+
+CTrade trade;
+input double MyTakeProfitValue = 20;
+
+string GetSignal()
+{
+    // Define the properties of the Chaikin EA  
+    int ChaikinDefinition = iChaikin(_Symbol, _Period, 3, 10, MODE_EMA, VOLUME_TICK);
+
+    // Create an array for several prices
+    double myPriceArray[];
+
+    // Sort the price array from the current candle downwards
+    ArraySetAsSeries(myPriceArray, true);
+
+    // Fill the price array
+    CopyBuffer(ChaikinDefinition, 0, 0, 3, myPriceArray);
+
+    // Get the value of the current candle
+    double ChaikinValue = myPriceArray[0];
+
+    // Get the value of the last candle
+    double PreviousChaikinValue = myPriceArray[1];
+
+    // Buy if crossed zero line from below
+    if (ChaikinValue > 0 && PreviousChaikinValue < 0)
+    {
+        return "buy";
+    }
+    // Sell if crossed zero line from above
+    if (ChaikinValue < 0 && PreviousChaikinValue > 0)
+    {
+        return "sell";
+    }
+
+    return ""; // No signal
+}
+
+void OnTick()
+{
+    // Get the signal
+    string signal = GetSignal();
+
+    // Check if a valid signal is received
+    if (StringLen(signal) > 0)
+    {
+        double Ask = SymbolInfoDouble(_Symbol, SYMBOL_ASK);
+        double Balance = AccountBalance();
+        double Equity = AccountEquity();
+
+        if (Equity >= Balance)
+        {
+            double takeProfitPrice = Ask + MyTakeProfitValue * _Point;
+            if (signal == "buy")
+            {
+                trade.Buy(0.10, NULL, Ask, 0, takeProfitPrice, NULL);
+            }
+            else if (signal == "sell")
+            {
+                trade.Sell(0.10, NULL, Ask, 0, takeProfitPrice, NULL);
+            }
+        }
+    }
+}
