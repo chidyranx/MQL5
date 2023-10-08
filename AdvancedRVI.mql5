@@ -1,0 +1,39 @@
+string CheckEntry()
+{
+    // Create a string for the signal
+    string signal = "";
+
+    // Create arrays for RVI values
+    double rviArray0[];
+    double rviArray1[];
+
+    // Define the RVI indicator
+    int rviDefinition = iRVI(_Symbol, _Period, 10);
+
+    // Sort the arrays from the current candle downwards
+    ArraySetAsSeries(rviArray0, true);
+    ArraySetAsSeries(rviArray1, true);
+
+    // Fill the arrays with RVI values
+    CopyBuffer(rviDefinition, 0, 0, 3, rviArray0);
+    CopyBuffer(rviDefinition, 1, 0, 3, rviArray1);
+
+    // Calculate the current value for line0 and line1
+    double rviValue0 = NormalizeDouble(rviArray0[0], _Digits);
+    double rviValue1 = NormalizeDouble(rviArray1[0], _Digits);
+
+    // Create a buy signal
+    if (rviValue0 < rviValue1 && rviValue0 < 0 && rviValue1 < 0)
+    {
+        signal = "buy";
+    }
+
+    // Create a sell signal
+    if (rviValue0 > rviValue1 && rviValue0 > 0 && rviValue1 > 0)
+    {
+        signal = "sell";
+    }
+
+    // Return the signal to the main module
+    return signal;
+}
