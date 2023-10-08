@@ -1,0 +1,32 @@
+string CheckEntry()
+{
+    // Create an empty string for the signal
+    string signal = "";
+
+    // Create an array for AC values
+    double acArray[];
+
+    // Define the AC indicator
+    int acDefinition = iAC(_Symbol, _Period);
+
+    // Sort the AC array from the current candle downwards
+    ArraySetAsSeries(acArray, true);
+
+    // Fill the array with AC values
+    CopyBuffer(acDefinition, 0, 0, 3, acArray);
+
+    // Get the value of the current AC value
+    double acValue = acArray[0];
+
+    // Generate signals based on AC values
+    if (acValue > 0)
+    {
+        signal = "sell";
+    }
+    else if (acValue < 0)
+    {
+        signal = "buy";
+    }
+
+    return signal;
+}
