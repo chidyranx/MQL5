@@ -1,0 +1,45 @@
+string CheckEntry()
+{
+    // Create a string for the signal
+    string signal = "";
+
+    // Create arrays for the K-line and D-line
+    double KArray[];
+    double DArray[];
+
+    // Define the Stochastic Oscillator
+    int StochasticDefinition = iStochastic(_Symbol, _Period, 5, 3, 3, MODE_SMA, STO_LOWHIGH);
+
+    // Fill the arrays with price data
+    CopyBuffer(StochasticDefinition, 0, 0, 3, KArray);
+    CopyBuffer(StochasticDefinition, 1, 0, 3, DArray);
+
+    // Calculate values for the current and last candle
+    double KValue0 = KArray[0];
+    double DValue0 = DArray[0];
+    double KValue1 = KArray[1];
+    double DValue1 = DArray[1];
+
+    // Buy signal
+    if (KValue0 < 20 && DValue0 < 20)
+    {
+        // If the K value has crossed the D value from below
+        if (KValue0 > DValue0 && KValue1 < DValue1)
+        {
+            signal = "buy";
+        }
+    }
+
+    // Sell signal
+    if (KValue0 > 80 && DValue0 > 80)
+    {
+        // If the K value has crossed the D value from above
+        if (KValue0 < DValue0 && KValue1 > DValue1)
+        {
+            signal = "sell";
+        }
+    }
+
+    // Return the signal
+    return signal;
+}
