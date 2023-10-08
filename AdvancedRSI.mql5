@@ -1,0 +1,32 @@
+string CheckEntry()
+{
+    // Create a string for the signal
+    string signal = "";
+
+    // Create an array for RSI values
+    double rsiArray[];
+
+    // Define the RSI indicator
+    int rsiDefinition = iRSI(_Symbol, _Period, 14, PRICE_CLOSE);
+
+    // Sort the RSI array from the current candle downwards
+    ArraySetAsSeries(rsiArray, true);
+
+    // Fill the array with RSI values
+    CopyBuffer(rsiDefinition, 0, 0, 3, rsiArray);
+
+    // Calculate the current RSI value
+    double rsiValue = NormalizeDouble(rsiArray[0], _Digits);
+
+    // Generate signals based on RSI values
+    if (rsiValue > 70)
+    {
+        signal = "sell";
+    }
+    else if (rsiValue < 30)
+    {
+        signal = "buy";
+    }
+
+    return signal;
+}
