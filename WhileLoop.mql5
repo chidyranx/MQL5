@@ -1,0 +1,55 @@
+// Include the required headers
+#include <Trade\Trade.mqh>
+
+// Create an instance of CTrade
+CTrade trade;
+
+// Function to open a buy order
+void OpenBuyOrder()
+{
+    // Get the Ask price
+    double Ask = SymbolInfoDouble(_Symbol, SYMBOL_ASK);
+    
+    // Normalize the Ask price to the appropriate number of digits
+    Ask = NormalizeDouble(Ask, _Digits);
+   
+    // Buy 0.10 Microlot with proper slippage and stop levels
+    double lotSize = 0.10;
+    double slippage = 1000 * _Point;  // Set your desired slippage
+    double stopLoss = Ask - 1000 * _Point;
+    double takeProfit = Ask + 100 * _Point;
+    
+    // Place the buy order
+    trade.Buy(lotSize, NULL, Ask, stopLoss, takeProfit, NULL);
+}
+
+//+------------------------------------------------------------------+
+//| Expert initialization function                                   |
+//+------------------------------------------------------------------+
+int OnInit()
+{
+    // Perform any necessary initialization here
+
+    return INIT_SUCCEEDED;
+}
+
+//+------------------------------------------------------------------+
+//| Expert deinitialization function                                 |
+//+------------------------------------------------------------------+
+void OnDeinit(const int reason)
+{
+    // Perform any necessary deinitialization here
+
+}
+
+//+------------------------------------------------------------------+
+//| Expert tick function                                             |
+//+------------------------------------------------------------------+
+void OnTick()
+{
+    // Check if no open position exists
+    if (PositionsTotal() == 0)
+    {
+        OpenBuyOrder();
+    }
+}
