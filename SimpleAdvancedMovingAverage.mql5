@@ -1,0 +1,18 @@
+void OnTick()
+{
+    // Create an array for AMA values
+    double amaArray[];
+
+    // Define the AMA indicator
+    int amaDefinition = iAMA(_Symbol, _Period, 9, 2, 30, 0, PRICE_CLOSE);
+
+    // Fill the array with AMA values
+    ArraySetAsSeries(amaArray, true);
+    CopyBuffer(amaDefinition, 0, 0, 3, amaArray);
+
+    // Get the value of the current candle
+    double amaValue = NormalizeDouble(amaArray[0], _Digits);
+
+    // Display AMA value on the chart
+    Comment("AMA Value: ", amaValue);
+}
