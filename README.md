@@ -1,4 +1,4 @@
-# MQL5 Programming Examples
+# MQL5 Programming
 
 This repository contains a collection of MQL5 (MetaQuotes Language 5) programming examples and snippets to aid developers in understanding and implementing algorithmic trading strategies and indicators for MetaTrader 5 (MT5) platform.
 
