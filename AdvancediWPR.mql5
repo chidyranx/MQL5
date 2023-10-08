@@ -1,0 +1,33 @@
+string CheckEntry()
+{
+    // Create a string variable for the signal
+    string signal = "";
+
+    // Create an array for WPR values
+    double WPRArray[];
+
+    // Define the WPR indicator
+    int WPRDefinition = iWPR(_Symbol, _Period, 14);
+
+    // Fill the array with WPR values
+    ArraySetAsSeries(WPRArray, true);
+    CopyBuffer(WPRDefinition, 0, 0, 3, WPRArray);
+
+    // Get the value of the current candle
+    double WPRValue = NormalizeDouble(WPRArray[0], _Digits);
+
+    // Buy signal
+    if (WPRValue < -80 && WPRValue > -100)
+    {
+        signal = "buy";
+    }
+    
+    // Sell signal
+    if (WPRValue > -20 && WPRValue < 0)
+    {
+        signal = "sell";
+    }
+
+    // Return the signal
+    return signal;
+}
